@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+fastapi = "*"
+uvicorn = "*"
+gunicorn = "*"
+httptools = "*"
+uvloop = "*"
+tortoise-orm = "*"
+asyncpg = "*"
+python-multipart = "*"
+
+[dev-packages]
+debugpy = "*"
+pre-commit = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+pytest-asyncio = "*"
+black = "*"
+
+[requires]
+python_version = "3.8"
+
+[pipenv]
+allow_prereleases = true

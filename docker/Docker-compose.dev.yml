@@ -1,0 +1,51 @@
+version: "3.2"
+
+services:
+  old_wave:
+    image: old_wave
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    command: uvicorn app.main:app --reload --workers 1 --host 0.0.0.0 --port 80
+    volumes:
+      - ../:/usr/src/app/
+    ports:
+      - 8000:80
+      - 10000:10000
+    environment:
+      - DEBUGGER=True
+      - WEB_APP_VERSION=0.0.0
+      - WEP_APP_TITLE=Old Wave FastAPI
+      - WEP_APP_DESCRIPTION=Backend to Old Wave with FastAPI
+      - ENVIRONMENT=dev
+      - POSTGRES_DATABASE_URL=postgres://postgres:postgres@old-wave-db:5432/old_wave_dev
+      - POSTGRES_DATABASE_TEST_URL=sqlite://./storage/old_wave_test
+      - DEFAULT_DATA=False
+      - DEFAULT_DEV_DATA=False
+    env_file:
+      - ../.env
+    networks:
+      - old_wave
+
+  old-wave-db:
+    image: old-wave-db
+    build:
+      context: ../db
+      dockerfile: Dockerfile
+    ports:
+      - "5436:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - old-wave-db:/var/lib/postgresql/data
+    networks:
+      - old_wave
+
+volumes:
+  old-wave-db:
+    external: true
+
+networks:
+  old_wave:
+    external: true
