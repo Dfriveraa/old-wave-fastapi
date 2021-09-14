@@ -15,7 +15,7 @@ class CRUDItem(CRUDBase[Item, CreateItem, UpdateItem]):
     ) -> List[Item]:
         model = (
             await self.model.filter(**payload)
-            .prefetch_related()
+            .prefetch_related("city")
             .all()
             .offset(skip)
             .limit(limit)

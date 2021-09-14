@@ -19,7 +19,6 @@ class Settings(BaseSettings):
     BUCKET_NAME: str = Field(...)
 
 
-@lru_cache()
 def get_settings() -> Settings:
     return Settings()
 

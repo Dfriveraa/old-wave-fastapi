@@ -12,6 +12,7 @@ uvloop = "*"
 tortoise-orm = "*"
 asyncpg = "*"
 python-multipart = "*"
+boto3 = "*"
 
 [dev-packages]
 debugpy = "*"

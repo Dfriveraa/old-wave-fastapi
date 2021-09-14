@@ -1,11 +1,21 @@
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    Path,
+    Query,
+    UploadFile,
+    File,
+    Form,
+)
 from fastapi.responses import JSONResponse, Response
 
 from app.schemas.general import CountDB
-from app.schemas.item import CreateItem, Item, SearchItem, UpdateItem
+from app.schemas.item import CreateItem, Item, SearchItem, UpdateItem, ItemList
 from app.services.item import item_service
+from app.services.s3 import s3_service
 
 router = APIRouter()
 
@@ -29,7 +39,7 @@ async def count(
 @router.get(
     "",
     response_class=JSONResponse,
-    response_model=List[Item],
+    response_model=ItemList,
     status_code=200,
     responses={
         200: {"description": "Items found"},
@@ -45,21 +55,68 @@ async def get_all(
         limit=limit,
         payload=search.dict(exclude_none=True),
     )
-    return items
+    items_list = ItemList(items=items, query=search.name__icontains, total=len(items))
+    return items_list
 
 
 @router.post(
     "",
     response_class=JSONResponse,
-    response_model=Item,
+    response_model=CreateItem,
     status_code=201,
     responses={
         201: {"description": "Item created"},
     },
 )
-async def create(new_item: CreateItem):
-    item = await item_service.create(obj_in=new_item)
+async def create(
+    city_id: int = Form(None),
+    name: str = Form(...),
+    description: Optional[str] = Form(None),
+    brand: str = Form(...),
+    price: float = Form(...),
+    rating: Optional[float] = Form(None),
+    pictures_file: List[UploadFile] = File(..., media_type="image"),
+    thumbnail: UploadFile = File(...),
+):
+    s3_service.validate_format(files=pictures_file)
+    s3_service.validate_format(files=[thumbnail])
+
+    urls = [s3_service.upload_file(picture) for picture in pictures_file]
+    url_thumbnail = s3_service.upload_file(thumbnail)
+    complete_item = CreateItem(
+        city_id=city_id,
+        name=name,
+        description=description,
+        brand=brand,
+        price=price,
+        rating=rating,
+        pictures=urls,
+        thumbnail=url_thumbnail,
+    )
+
+    item = await item_service.create(obj_in=complete_item)
     return item
+
+
+@router.post(
+    "/images",
+    response_class=JSONResponse,
+    status_code=201,
+    responses={
+        201: {"description": "Item created"},
+    },
+)
+async def create(file: UploadFile = File(..., media_type="image/png")):
+    if file.content_type not in [
+        "image/gif",
+        "image/png",
+        " image/jpeg",
+        "image/bmp",
+        "image/webp",
+    ]:
+        raise HTTPException(status_code=422, detail="Invalid images format")
+    s3_service.upload_file(file)
+    return {}
 
 
 @router.get(
