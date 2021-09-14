@@ -1,7 +1,9 @@
-from app.config import settings
-from fastapi import UploadFile, HTTPException
-import boto3
 from typing import List
+
+import boto3
+from fastapi import HTTPException, UploadFile
+
+from app.config import settings
 
 
 class BucketService:
@@ -15,8 +17,10 @@ class BucketService:
 
     def upload_file(self, file: UploadFile) -> str:
         self.__client.upload_fileobj(file.file, settings.BUCKET_NAME, file.filename)
-        return f"https://{settings.BUCKET_NAME}.s3.amazonaws.com/{file.filename}".replace(
-            " ", "+"
+        return (
+            f"https://{settings.BUCKET_NAME}.s3.amazonaws.com/{file.filename}".replace(
+                " ", "+"
+            )
         )
 
     def validate_format(self, files=List[UploadFile]):

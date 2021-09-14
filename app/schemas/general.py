@@ -1,9 +1,10 @@
 from typing import Any, TypeVar
 
+from fastapi import Form
 from pydantic import BaseModel, Field
 from pydantic.networks import AnyHttpUrl
 from tortoise.models import Model
-from fastapi import Form
+
 ModelType = TypeVar("ModelType", bound=Model)
 
 CrudType = TypeVar("CrudType", bound=Any)
@@ -20,6 +21,7 @@ def form_body(cls):
         ]
     )
     return cls
+
 
 class CountDB(BaseModel):
     count: int = Field(...)

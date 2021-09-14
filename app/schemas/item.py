@@ -1,11 +1,11 @@
 from typing import List, Optional
+
+from fastapi import Form
 from pydantic import BaseModel, Field
 from pydantic.networks import AnyHttpUrl
-from fastapi import Form
 
 from app.schemas.city import City
-from app.schemas.general import Seller
-from app.schemas.general import form_body
+from app.schemas.general import Seller, form_body
 
 
 class ItemBase(BaseModel):

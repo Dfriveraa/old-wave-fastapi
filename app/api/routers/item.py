@@ -3,17 +3,17 @@ from typing import List, Optional
 from fastapi import (
     APIRouter,
     Depends,
+    File,
+    Form,
     HTTPException,
     Path,
     Query,
     UploadFile,
-    File,
-    Form,
 )
 from fastapi.responses import JSONResponse, Response
 
 from app.schemas.general import CountDB
-from app.schemas.item import CreateItem, Item, SearchItem, UpdateItem, ItemList
+from app.schemas.item import CreateItem, Item, ItemList, SearchItem, UpdateItem
 from app.services.item import item_service
 from app.services.s3 import s3_service
 
@@ -96,27 +96,6 @@ async def create(
 
     item = await item_service.create(obj_in=complete_item)
     return item
-
-
-@router.post(
-    "/images",
-    response_class=JSONResponse,
-    status_code=201,
-    responses={
-        201: {"description": "Item created"},
-    },
-)
-async def create(file: UploadFile = File(..., media_type="image/png")):
-    if file.content_type not in [
-        "image/gif",
-        "image/png",
-        " image/jpeg",
-        "image/bmp",
-        "image/webp",
-    ]:
-        raise HTTPException(status_code=422, detail="Invalid images format")
-    s3_service.upload_file(file)
-    return {}
 
 
 @router.get(
