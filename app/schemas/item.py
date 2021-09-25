@@ -49,6 +49,9 @@ class ItemInDB(ItemBase):
     city: Optional[City] = Field(None)
     id: int = Field(...)
 
+    class Config:
+        orm_mode = True
+
 
 class ItemListDB(ItemInDB):
     thumbnail: AnyHttpUrl = Field(...)
