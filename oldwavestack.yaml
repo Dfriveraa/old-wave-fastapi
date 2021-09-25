@@ -3,6 +3,8 @@ version: "3.7"
 services:
   old_wave:
     image: old-wave
+    ports:
+      - "8000:8000"
     deploy:
       replicas: 1
       update_config:
@@ -14,7 +16,7 @@ services:
       - WEB_APP_VERSION=0.0.0
       - WEP_APP_TITLE=Old Wave FastAPI
       - WEP_APP_DESCRIPTION=Backend to Old Wave with FastAPI
-      - ENVIRONMENT=prod
+      - ENVIRONMENT=dev
       - POSTGRES_DATABASE_URL=postgres://postgres:postgres@old-wave-db:5432/old_wave_dev
       - POSTGRES_DATABASE_TEST_URL=sqlite://./storage/old_wave_test
       - DEFAULT_DATA=False
