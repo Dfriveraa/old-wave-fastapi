@@ -13,7 +13,7 @@ services:
       - 8000:80
       - 10000:10000
     environment:
-      - DEBUGGER=True
+      - DEBUGGER=False
       - WEB_APP_VERSION=0.0.0
       - WEP_APP_TITLE=Old Wave FastAPI
       - WEP_APP_DESCRIPTION=Backend to Old Wave with FastAPI

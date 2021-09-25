@@ -30,4 +30,4 @@ class CountDB(BaseModel):
 class Seller(BaseModel):
     id: int = Field(7)
     name: str = Field("FastAPI")
-    logo: AnyHttpUrl = Field("http://the-best-logo")
+    logo: AnyHttpUrl = Field("https://worldvectorlogo.com/es/download/fastapi-1.svg")

@@ -18,6 +18,8 @@ def create_application():
         title=settings.TITLE,
         description=settings.DESCRIPTION,
         version=settings.VERSION,
+        docs_url="/api/v1/docs",
+        openapi_url="/api/v1/openapi.json"
     )
     app.include_router(api_router, prefix="/api")
 

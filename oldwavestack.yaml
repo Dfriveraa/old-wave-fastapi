@@ -1,0 +1,52 @@
+version: "3.7"
+
+services:
+  old_wave:
+    image: old-wave
+    ports:
+      - "8000:8000"
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 1
+        order: start-first
+        failure_action: rollback
+    environment:
+      - DEBUGGER=False
+      - WEB_APP_VERSION=0.0.0
+      - WEP_APP_TITLE=Old Wave FastAPI
+      - WEP_APP_DESCRIPTION=Backend to Old Wave with FastAPI
+      - ENVIRONMENT=dev
+      - POSTGRES_DATABASE_URL=postgres://postgres:postgres@old-wave-db:5432/old_wave_dev
+      - POSTGRES_DATABASE_TEST_URL=sqlite://./storage/old_wave_test
+      - DEFAULT_DATA=False
+      - DEFAULT_DEV_DATA=False
+      - ACCESS_KEY_ID=AKIAURCOROZRKEWRGQ5F
+      - SECRET_ACCESS_KEY_PASSWORD=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
+      - BUCKET_NAME=dev-empresariales
+
+  old-wave-db:
+      image: postgres
+      ports:
+        - "5432:5432"
+      environment:
+        - POSTGRES_DB=old_wave_dev
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
+      volumes:
+        - old-wave-db:/var/lib/postgresql/data
+      deploy:
+        replicas: 1
+
+  old-wave-nginx:
+    image: old-wave-nginx
+    ports:
+      - "80:80"
+    deploy:
+      replicas: 1
+
+volumes:
+  old-wave-db:
+    external: true
+
+
