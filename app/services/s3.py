@@ -23,12 +23,12 @@ class BucketService:
             )
         )
 
-    def validate_format(self, files=List[UploadFile]):
+    def validate_format(self, files: List[UploadFile]):
         for file in files:
             if file.content_type not in [
                 "image/gif",
                 "image/png",
-                " image/jpeg",
+                "image/jpeg",
                 "image/bmp",
                 "image/webp",
             ]:
