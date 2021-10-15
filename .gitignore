@@ -139,3 +139,5 @@ dmypy.json
 *.code-workspace
 
 .env
+
+.idea
