@@ -13,7 +13,14 @@ from fastapi import (
 from fastapi.responses import JSONResponse, Response
 
 from app.schemas.general import CountDB
-from app.schemas.item import CreateItem, Item, ItemList, SearchItem, UpdateItem
+from app.schemas.item import (
+    CreateItem,
+    Item,
+    ItemList,
+    ItemResponse,
+    SearchItem,
+    UpdateItem,
+)
 from app.services.item import item_service
 from app.services.s3 import s3_service
 
@@ -62,7 +69,7 @@ async def get_all(
 @router.post(
     "",
     response_class=JSONResponse,
-    response_model=CreateItem,
+    response_model=ItemResponse,
     status_code=201,
     responses={
         201: {"description": "Item created"},
