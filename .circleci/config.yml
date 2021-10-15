@@ -21,10 +21,6 @@ jobs:
           BUCKET_NAME: $BUCKET_NAME
     steps:
       - checkout
-      - run:
-          name: Check env
-          command: |
-            echo ${BUCKET_NAME}
       - restore_cache:
           key: deps1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
