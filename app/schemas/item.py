@@ -32,6 +32,10 @@ class CreateItem(ItemBase):
     city_id: int = Field(None)
 
 
+class ItemResponse(CreateItem):
+    id: int = Field(None)
+
+
 class UpdateItem(BaseModel):
     name: Optional[str] = Field(None)
     description: Optional[str] = Field(None)

@@ -16,19 +16,20 @@ class BucketService:
         )
 
     def upload_file(self, file: UploadFile) -> str:
-        self.__client.upload_fileobj(file.file, settings.BUCKET_NAME, file.filename)
+        if settings.ENVIRONMENT != "test":
+            self.__client.upload_fileobj(file.file, settings.BUCKET_NAME, file.filename)
         return (
             f"https://{settings.BUCKET_NAME}.s3.amazonaws.com/{file.filename}".replace(
                 " ", "+"
             )
         )
 
-    def validate_format(self, files=List[UploadFile]):
+    def validate_format(self, files: List[UploadFile]):
         for file in files:
             if file.content_type not in [
                 "image/gif",
                 "image/png",
-                " image/jpeg",
+                "image/jpeg",
                 "image/bmp",
                 "image/webp",
             ]:
