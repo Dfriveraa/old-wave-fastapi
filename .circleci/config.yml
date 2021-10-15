@@ -22,12 +22,20 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Check env
           command: |
-            pwd
+            echo ${BUCKET_NAME}
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
       - run:
+          name: Setup Pipenv
           command: |
             pip install pipenv
             pipenv install -d
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "requirements.txt" }}
+          paths:
+            - "."
       - run:
           command: |
             pipenv run python -m pytest --cov="."
