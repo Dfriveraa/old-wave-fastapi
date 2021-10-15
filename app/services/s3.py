@@ -17,7 +17,7 @@ class BucketService:
 
     def upload_file(self, file: UploadFile) -> str:
         if settings.ENVIRONMENT != "test":
-            self.__client.upload_fileobj(file.file, settings.BUCKET_NAME, file.filename)        
+            self.__client.upload_fileobj(file.file, settings.BUCKET_NAME, file.filename)
         return (
             f"https://{settings.BUCKET_NAME}.s3.amazonaws.com/{file.filename}".replace(
                 " ", "+"
