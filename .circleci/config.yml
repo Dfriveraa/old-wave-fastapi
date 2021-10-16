@@ -1,0 +1,43 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/old-wave-fastapi
+    docker:
+      - image: python:3.8.5-slim-buster
+        environment:
+          PIPENV_VENV_IN_PROJECT: true
+          DATABASE_URL: $DATABASE_URL
+          DEBUGGER: false
+          WEB_APP_VERSION: 0.0.0
+          WEP_APP_TITLE: Old Wave FastAPI
+          WEP_APP_DESCRIPTION: Backend to Old Wave with FastAPI
+          ENVIRONMENT: test
+          POSTGRES_DATABASE_URL: $POSTGRES_DATABASE_URL
+          POSTGRES_DATABASE_TEST_URL: $POSTGRES_DATABASE_TEST_URL
+          DEFAULT_DATA: false
+          DEFAULT_DEV_DATA: false
+          ACCESS_KEY_ID: $ACCESS_KEY_ID
+          SECRET_ACCESS_KEY_PASSWORD: $SECRET_ACCESS_KEY_PASSWORD
+          BUCKET_NAME: $BUCKET_NAME
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+      - run:
+          name: Setup Pipenv
+          command: |
+            pip install pipenv
+            pipenv install -d
+      - save_cache:
+          key: deps1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          paths:
+            - "."
+      - run:
+          command: |
+            pipenv run python -m pytest --cov="."
+
+workflows:
+  build:
+    jobs:
+      - build:
+          context: old-wave
