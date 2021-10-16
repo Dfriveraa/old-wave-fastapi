@@ -43,3 +43,17 @@ def test_all_citys(test_app: TestClient, event_loop: asyncio.AbstractEventLoop):
     assert type(json) == list
     assert type(json[0]) == dict
     assert len(json) == len(cities_in)
+
+
+def test_get_all_cities_paginated(
+    test_app: TestClient, event_loop: asyncio.AbstractEventLoop
+):
+    cities_in = ["Paolakistan", "Amagayork", "Medallo"]
+    for i in cities_in:
+        event_loop.run_until_complete(crud_city.create(obj_in=CreateCity(name=i)))
+    response = test_app.get(route, params={"limit": 1})
+    assert response.status_code == 200
+    json = response.json()
+    assert type(json) == list
+    assert type(json[0]) == dict
+    assert len(json) == 1
