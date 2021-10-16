@@ -28,6 +28,7 @@ jobs:
           command: |
             pip install pipenv
             pipenv install -d
+            pipenv install pytest-html
       - save_cache:
           key: deps1-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
           paths:
@@ -35,7 +36,7 @@ jobs:
       - run:
           command: |
             mkdir test-results
-            pipenv run python -m pytest --cov="." --junitxml=test-results/junit.xml
+            pipenv run python -m pytest --cov="." --html=test-results/report.html --self-contained-html
       - store_test_results:
           path: test-results
       - store_artifacts:
